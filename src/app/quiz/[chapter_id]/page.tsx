@@ -1,14 +1,12 @@
 "use client";
 
-import { useState, use } from "react";
+import { useState, use, useEffect } from "react";
 import Link from "next/link";
 import GlassCard from "@/components/ui/GlassCard";
 import GlowButton from "@/components/ui/GlowButton";
 
-// Import data kuis yang baru saja kamu buat
 import quizDataRaw from "@/data/quiz.json";
 
-// 1. Definisikan Tipe Data
 interface QuizQuestion {
   id: string;
   chapter: number;
@@ -21,21 +19,32 @@ interface QuizQuestion {
 const quizData = quizDataRaw as QuizQuestion[];
 
 export default function QuizPage({ params }: { params: Promise<{ chapter_id: string }> }) {
-  // 2. Ekstrak Parameter Bab
   const resolvedParams = use(params);
   const chapterId = parseInt(resolvedParams.chapter_id);
 
-  // Ambil hanya soal untuk bab ini
   const questions = quizData.filter((q) => q.chapter === chapterId);
 
-  // 3. State Management untuk Logika Kuis
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const [isAnswerChecked, setIsAnswerChecked] = useState(false);
   const [score, setScore] = useState(0);
   const [isFinished, setIsFinished] = useState(false);
 
-  // Jika data belum ada (mencegah error)
+  // FITUR BARU: Menyimpan progress ke localStorage jika lulus
+  useEffect(() => {
+    if (isFinished && score >= 80) {
+      // Ambil data progress sebelumnya (default bab 1 terbuka)
+      const savedProgress = JSON.parse(localStorage.getItem("komorebi_progress") || "[1]");
+      const nextChapter = chapterId + 1;
+      
+      // Jika bab selanjutnya belum ada di penyimpanan, tambahkan!
+      if (!savedProgress.includes(nextChapter)) {
+        savedProgress.push(nextChapter);
+        localStorage.setItem("komorebi_progress", JSON.stringify(savedProgress));
+      }
+    }
+  }, [isFinished, score, chapterId]);
+
   if (questions.length === 0) {
     return (
       <main className="min-h-screen flex items-center justify-center p-8">
@@ -51,20 +60,13 @@ export default function QuizPage({ params }: { params: Promise<{ chapter_id: str
 
   const currentQuestion = questions[currentIndex];
 
-  // 4. Fungsi-fungsi Interaksi (Handlers)
   const handleSelectOption = (option: string) => {
-    // Jangan izinkan ganti jawaban kalau sudah di-cek
-    if (!isAnswerChecked) {
-      setSelectedAnswer(option);
-    }
+    if (!isAnswerChecked) setSelectedAnswer(option);
   };
 
   const handleCheckAnswer = () => {
     if (!selectedAnswer) return;
-    
     setIsAnswerChecked(true);
-    
-    // Tambah skor jika benar (misal tiap soal poinnya 100/jumlah_soal)
     if (selectedAnswer === currentQuestion.correctAnswer) {
       const poinPerSoal = 100 / questions.length;
       setScore((prev) => prev + poinPerSoal);
@@ -73,17 +75,14 @@ export default function QuizPage({ params }: { params: Promise<{ chapter_id: str
 
   const handleNextQuestion = () => {
     if (currentIndex + 1 < questions.length) {
-      // Lanjut ke soal berikutnya, reset status
       setCurrentIndex((prev) => prev + 1);
       setSelectedAnswer(null);
       setIsAnswerChecked(false);
     } else {
-      // Jika ini soal terakhir, akhiri kuis
       setIsFinished(true);
     }
   };
 
-  // 5. Tampilan Jika Kuis Selesai (Result Screen)
   if (isFinished) {
     return (
       <main className="min-h-screen flex items-center justify-center p-4">
@@ -92,7 +91,6 @@ export default function QuizPage({ params }: { params: Promise<{ chapter_id: str
           <h2 className="text-3xl font-bold text-slate-800 mb-2">Kuis Selesai!</h2>
           <p className="text-slate-600 mb-8">Bab {chapterId}</p>
           
-          {/* Lingkaran Skor Akhir */}
           <div className="relative w-40 h-40 rounded-full border-[12px] border-white/50 flex items-center justify-center mb-8 shadow-inner">
             <span className={`text-5xl font-bold ${score >= 80 ? 'text-emerald-500' : 'text-orange-500'}`}>
               {Math.round(score)}
@@ -101,7 +99,7 @@ export default function QuizPage({ params }: { params: Promise<{ chapter_id: str
 
           <p className="font-medium text-slate-700 mb-8">
             {score >= 80 
-              ? "Luar Biasa! Kamu sudah siap ke bab selanjutnya." 
+              ? "Luar Biasa! Bab selanjutnya telah terbuka di Dashboard." 
               : "Tetap semangat! Coba baca materinya lagi dan ulang kembali."}
           </p>
 
@@ -113,13 +111,10 @@ export default function QuizPage({ params }: { params: Promise<{ chapter_id: str
     );
   }
 
-  // 6. Tampilan Utama Kuis
   const progressPercentage = ((currentIndex) / questions.length) * 100;
 
   return (
     <main className="max-w-3xl mx-auto p-4 md:p-8 pt-12 min-h-screen flex flex-col">
-      
-      {/* Top Bar: Progress & Skor */}
       <div className="flex items-center justify-between mb-8">
         <div className="flex items-center gap-4">
           <Link href={`/learn/${chapterId}`} className="w-10 h-10 flex items-center justify-center rounded-full bg-white/40 hover:bg-white/60 transition shadow-sm font-bold text-slate-700">
@@ -132,7 +127,6 @@ export default function QuizPage({ params }: { params: Promise<{ chapter_id: str
         </div>
       </div>
 
-      {/* Progress Bar (Visualisasi) */}
       <div className="w-full h-2 bg-white/30 rounded-full mb-12 overflow-hidden">
         <div 
           className="h-full bg-orange-400 transition-all duration-500 ease-out"
@@ -140,7 +134,6 @@ export default function QuizPage({ params }: { params: Promise<{ chapter_id: str
         ></div>
       </div>
 
-      {/* Area Pertanyaan */}
       <div className="flex-grow flex flex-col">
         <GlassCard className="mb-8 bg-white/40 border-white/60 p-8 shadow-xl">
           <h2 className="text-2xl md:text-3xl font-bold text-slate-800 text-center leading-relaxed">
@@ -148,29 +141,16 @@ export default function QuizPage({ params }: { params: Promise<{ chapter_id: str
           </h2>
         </GlassCard>
 
-        {/* Pilihan Jawaban (Grid) */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
           {currentQuestion.options.map((option, idx) => {
-            
-            // Logika Pewarnaan Tombol
-            let buttonStyle = "bg-white/50 text-slate-700 hover:bg-white/70"; // Default
-            
+            let buttonStyle = "bg-white/50 text-slate-700 hover:bg-white/70"; 
             if (isAnswerChecked) {
-              if (option === currentQuestion.correctAnswer) {
-                // Jawaban Benar (Hijau terang)
-                buttonStyle = "bg-emerald-400 text-white shadow-lg border-emerald-300";
-              } else if (option === selectedAnswer) {
-                // Jawaban Salah yang dipilih (Merah)
-                buttonStyle = "bg-rose-400 text-white shadow-inner opacity-80 border-rose-300";
-              } else {
-                // Pilihan lain diredupkan
-                buttonStyle = "bg-white/30 text-slate-400 opacity-50";
-              }
+              if (option === currentQuestion.correctAnswer) buttonStyle = "bg-emerald-400 text-white shadow-lg border-emerald-300";
+              else if (option === selectedAnswer) buttonStyle = "bg-rose-400 text-white shadow-inner opacity-80 border-rose-300";
+              else buttonStyle = "bg-white/30 text-slate-400 opacity-50";
             } else if (option === selectedAnswer) {
-              // Baru Dipilih, belum di-cek (Oranye / Glow)
               buttonStyle = "bg-orange-300 text-white shadow-glow border-orange-200 scale-[1.02] transform transition-transform";
             }
-
             return (
               <button
                 key={idx}
@@ -184,7 +164,6 @@ export default function QuizPage({ params }: { params: Promise<{ chapter_id: str
           })}
         </div>
 
-        {/* Penjelasan (Muncul setelah cek jawaban) */}
         {isAnswerChecked && (
           <div className="mb-8 p-4 rounded-xl bg-white/40 border-l-4 border-l-blue-400 animate-fade-in">
             <p className="text-sm font-bold text-blue-600 mb-1">Penjelasan:</p>
@@ -192,14 +171,9 @@ export default function QuizPage({ params }: { params: Promise<{ chapter_id: str
           </div>
         )}
 
-        {/* Footer (Action Buttons) */}
         <div className="mt-auto flex justify-center pb-8">
           {!isAnswerChecked ? (
-            <GlowButton 
-              onClick={handleCheckAnswer} 
-              disabled={!selectedAnswer}
-              className={`w-full md:w-auto px-12 ${!selectedAnswer ? 'opacity-50 grayscale cursor-not-allowed' : ''}`}
-            >
+            <GlowButton onClick={handleCheckAnswer} disabled={!selectedAnswer} className={`w-full md:w-auto px-12 ${!selectedAnswer ? 'opacity-50 grayscale cursor-not-allowed' : ''}`}>
               Cek Jawaban
             </GlowButton>
           ) : (
@@ -209,7 +183,6 @@ export default function QuizPage({ params }: { params: Promise<{ chapter_id: str
           )}
         </div>
       </div>
-
     </main>
   );
 }

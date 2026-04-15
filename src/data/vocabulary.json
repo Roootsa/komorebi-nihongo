@@ -1,0 +1,74 @@
+[
+  {
+    "id": 1,
+    "chapter": 1,
+    "kanji": "私",
+    "kana": "わたし",
+    "romaji": "watashi",
+    "meaning": "Saya"
+  },
+  {
+    "id": 2,
+    "chapter": 1,
+    "kanji": "あなた",
+    "kana": "あなた",
+    "romaji": "anata",
+    "meaning": "Anda / Kamu"
+  },
+  {
+    "id": 3,
+    "chapter": 1,
+    "kanji": "先生",
+    "kana": "せんせい",
+    "romaji": "sensei",
+    "meaning": "Guru / Dosen"
+  },
+  {
+    "id": 4,
+    "chapter": 1,
+    "kanji": "学生",
+    "kana": "がくせい",
+    "romaji": "gakusei",
+    "meaning": "Mahasiswa / Siswa"
+  },
+  {
+    "id": 5,
+    "chapter": 2,
+    "kanji": "これ",
+    "kana": "これ",
+    "romaji": "kore",
+    "meaning": "Ini (Benda di dekat pembicara)"
+  },
+  {
+    "id": 6,
+    "chapter": 2,
+    "kanji": "それ",
+    "kana": "それ",
+    "romaji": "sore",
+    "meaning": "Itu (Benda di dekat lawan bicara)"
+  },
+  {
+    "id": 7,
+    "chapter": 2,
+    "kanji": "あれ",
+    "kana": "あれ",
+    "romaji": "are",
+    "meaning": "Itu (Benda jauh dari keduanya)"
+  },
+  {
+    "id": 8,
+    "chapter": 2,
+    "kanji": "本",
+    "kana": "ほん",
+    "romaji": "hon",
+    "meaning": "Buku"
+  },
+  {
+    "id": 9,
+    "chapter": 2,
+    "kanji": "鞄",
+    "kana": "かばん",
+    "romaji": "kaban",
+    "meaning": "Tas"
+  }
+]

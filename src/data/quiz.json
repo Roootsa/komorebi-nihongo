@@ -63,5 +63,50 @@
     ],
     "correctAnswer": "Anda / Kamu",
     "explanation": "'Anata' digunakan untuk menyebut lawan bicara secara sopan (Anda/Kamu)."
+  },
+  {
+    "id": "q6",
+    "chapter": 2,
+    "question": "Apa arti dari 'これ' (Kore)?",
+    "options": ["Itu (dekat)", "Ini", "Itu (jauh)", "Di sana"],
+    "correctAnswer": "Ini",
+    "explanation": "'Kore' digunakan untuk menunjuk benda yang berada di dekat pembicara (Ini)."
+  },
+  {
+    "id": "q7",
+    "chapter": 2,
+    "question": "Jika kamu ingin menunjuk benda yang dipegang oleh teman bicaramu, kata apa yang digunakan?",
+    "options": ["これ (Kore)", "それ (Sore)", "あれ (Are)", "どれ (Dore)"],
+    "correctAnswer": "それ (Sore)",
+    "explanation": "'Sore' digunakan untuk benda yang berada di dekat lawan bicara."
+  },
+  {
+    "id": "q8",
+    "chapter": 2,
+    "question": "Partikel apa yang digunakan untuk menyatakan kepemilikan?",
+    "options": ["は (wa)", "が (ga)", "の (no)", "も (mo)"],
+    "correctAnswer": "の (no)",
+    "explanation": "Partikel 'no' diletakkan di antara pemilik dan benda untuk menyatakan kepemilikan (contoh: Watashi no hon)."
+  },
+  {
+    "id": "q9",
+    "chapter": 2,
+    "question": "Lengkapi kalimat ini: 'Ini adalah tas saya.' -> これは わたしの ___ です。",
+    "options": ["ほん (hon)", "せんせい (sensei)", "かばん (kaban)", "がくせい (gakusei)"],
+    "correctAnswer": "かばん (kaban)",
+    "explanation": "'Kaban' berarti tas. 'Hon' berarti buku."
+  },
+  {
+    "id": "q10",
+    "chapter": 2,
+    "question": "Terjemahkan ke bahasa Indonesia: 'あれは 私の 本じゃありません'",
+    "options": [
+      "Itu (jauh) adalah buku saya.",
+      "Ini bukan tas saya.",
+      "Itu (dekat) bukan buku saya.",
+      "Itu (jauh) bukan buku saya."
+    ],
+    "correctAnswer": "Itu (jauh) bukan buku saya.",
+    "explanation": "'Are' = Itu (jauh). '...ja arimasen' = bukan."
   }
 ]
