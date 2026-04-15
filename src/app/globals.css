@@ -1,0 +1,17 @@
+@import "tailwindcss";
+body {
+  /* Teks utama berwarna gelap agar terbaca jelas */
+  @apply min-h-screen text-slate-800 font-sans;
+  
+  /* Gradasi langit fajar/senja yang menenangkan */
+  background: linear-gradient(135deg, #e0f2fe 0%, #FFDAB9 50%, #FFA07A 100%);
+  background-attachment: fixed;
+}
+
+/* Class khusus untuk efek kaca buram (Glassmorphism) */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.35);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+}
