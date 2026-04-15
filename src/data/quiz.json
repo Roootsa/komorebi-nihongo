@@ -1,0 +1,67 @@
+[
+  {
+    "id": "q1",
+    "chapter": 1,
+    "question": "Apa arti dari kata 'わたし' (watashi)?",
+    "options": [
+      "Anda",
+      "Saya",
+      "Guru",
+      "Mahasiswa"
+    ],
+    "correctAnswer": "Saya",
+    "explanation": "'Watashi' (私) adalah kata ganti orang pertama yang berarti 'Saya'."
+  },
+  {
+    "id": "q2",
+    "chapter": 1,
+    "question": "Lengkapi kalimat berikut: わたし ___ 学生です。",
+    "options": [
+      "の (no)",
+      "も (mo)",
+      "が (ga)",
+      "は (wa)"
+    ],
+    "correctAnswer": "は (wa)",
+    "explanation": "Partikel 'wa' (ditulis は) digunakan untuk menandai subjek atau topik dalam sebuah kalimat."
+  },
+  {
+    "id": "q3",
+    "chapter": 1,
+    "question": "Bagaimana cara membaca Kanji '先生'?",
+    "options": [
+      "がくせい (gakusei)",
+      "かいしゃいん (kaishain)",
+      "せんせい (sensei)",
+      "いしゃ (isha)"
+    ],
+    "correctAnswer": "せんせい (sensei)",
+    "explanation": "Kanji '先生' dibaca 'Sensei', yang berarti Guru atau Dosen."
+  },
+  {
+    "id": "q4",
+    "chapter": 1,
+    "question": "Terjemahkan kalimat ini: 'Saya bukan karyawan perusahaan.'",
+    "options": [
+      "わたしは かいしゃいんです。",
+      "わたしは かいしゃいんじゃありません。",
+      "あなたも かいしゃいんです。",
+      "かいしゃいんは わたしです。"
+    ],
+    "correctAnswer": "わたしは かいしゃいんじゃありません。",
+    "explanation": "Akhiran '... ja arimasen' adalah bentuk negatif (bukan/tidak) dari '... desu'."
+  },
+  {
+    "id": "q5",
+    "chapter": 1,
+    "question": "Apa terjemahan bahasa Indonesia dari 'あなた' (anata)?",
+    "options": [
+      "Dia (Laki-laki)",
+      "Dia (Perempuan)",
+      "Saya",
+      "Anda / Kamu"
+    ],
+    "correctAnswer": "Anda / Kamu",
+    "explanation": "'Anata' digunakan untuk menyebut lawan bicara secara sopan (Anda/Kamu)."
+  }
+]
