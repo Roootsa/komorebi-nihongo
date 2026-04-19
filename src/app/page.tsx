@@ -1,16 +1,40 @@
-"use client"; // Tambahkan ini agar interaksi Link dan Button berjalan mulus
+"use client";
 
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import GlassCard from "@/components/ui/GlassCard";
 import GlowButton from "@/components/ui/GlowButton";
 
-export default function WelcomePage() {
+export default function LoginPage() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const router = useRouter();
+
+  const handleLogin = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (email.trim() !== "" && password.trim() !== "") {
+      // Mengambil nama dari email (contoh: faizar@mail.com -> faizar)
+      const extractedName = email.split('@')[0];
+      // Huruf pertama kapital
+      const capitalizedName = extractedName.charAt(0).toUpperCase() + extractedName.slice(1);
+      
+      // Simpan ke memori browser
+      localStorage.setItem("komorebi_username", capitalizedName);
+      
+      // Arahkan ke Dashboard
+      router.push("/dashboard");
+    } else {
+      alert("Tolong isi Email/Username dan Password dulu ya! 🌸");
+    }
+  };
+
   return (
     <main className="min-h-screen flex items-center justify-center p-4 md:p-8">
-      {/* Container utama dengan grid untuk membelah layar (Split Screen) */}
       <div className="max-w-5xl w-full grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
         
-        {/* Bagian Kiri: Teks Puitis & Atmosfer */}
+        {/* Bagian Kiri: Teks Puitis */}
         <div className="text-center md:text-left space-y-6 hidden md:block px-8">
           <div className="inline-block p-3 bg-white/30 rounded-2xl border border-white/50 mb-2 shadow-glass">
             <span className="text-4xl">🌅</span>
@@ -19,7 +43,7 @@ export default function WelcomePage() {
             Komorebi <br /> <span className="text-orange-600">Nihongo</span>
           </h1>
           <p className="text-xl text-slate-700 font-medium italic">
-            {`"Langkah pertamamu menuju matahari terbit dimulai di sini."`}
+            {"Langkah pertamamu menuju matahari terbit dimulai di sini."}
           </p>
           <p className="text-slate-600">
             Platform belajar bahasa Jepang interaktif berbasis Minna no Nihongo.
@@ -28,9 +52,8 @@ export default function WelcomePage() {
 
         {/* Bagian Kanan: Form Login */}
         <div className="flex justify-center">
-          <GlassCard className="w-full max-w-md p-8 shadow-2xl border-t border-l border-white/60">
+          <GlassCard className="w-full max-w-md p-8 shadow-2xl border-t border-l border-white/60 bg-white/40">
             
-            {/* Judul Muncul hanya di layar HP */}
             <div className="text-center mb-8 md:hidden">
               <span className="text-4xl block mb-2">🌅</span>
               <h2 className="text-3xl font-bold text-slate-800">Komorebi Nihongo</h2>
@@ -38,14 +61,20 @@ export default function WelcomePage() {
             
             <h2 className="text-2xl font-bold text-slate-800 mb-6 text-center">Selamat Datang Kembali</h2>
             
-            <form className="space-y-4">
-              {/* Input Username */}
+            {/* Form disambungkan ke handleLogin dan ditambahkan suppressHydrationWarning */}
+            <form onSubmit={handleLogin} className="space-y-4" suppressHydrationWarning>
+              
+              {/* Input Email/Username */}
               <div>
                 <label className="block text-sm font-medium text-slate-700 mb-1">Username / Email</label>
                 <input 
                   type="text" 
-                  className="w-full px-4 py-3 rounded-xl bg-white/40 border border-white/50 focus:outline-none focus:ring-2 focus:ring-orange-400 placeholder-slate-500 text-slate-800 transition-all shadow-inner"
-                  placeholder="Masukkan username"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full px-4 py-3 rounded-xl bg-white/60 border border-white/50 focus:outline-none focus:ring-2 focus:ring-orange-400 placeholder-slate-400 text-slate-800 transition-all shadow-inner"
+                  placeholder="faizar@komorebi.com"
+                  autoComplete="off"
+                  suppressHydrationWarning
                 />
               </div>
               
@@ -54,8 +83,11 @@ export default function WelcomePage() {
                 <label className="block text-sm font-medium text-slate-700 mb-1">Password</label>
                 <input 
                   type="password" 
-                  className="w-full px-4 py-3 rounded-xl bg-white/40 border border-white/50 focus:outline-none focus:ring-2 focus:ring-orange-400 placeholder-slate-500 text-slate-800 transition-all shadow-inner"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full px-4 py-3 rounded-xl bg-white/60 border border-white/50 focus:outline-none focus:ring-2 focus:ring-orange-400 placeholder-slate-400 text-slate-800 transition-all shadow-inner"
                   placeholder="••••••••"
+                  suppressHydrationWarning
                 />
               </div>
 
@@ -68,18 +100,13 @@ export default function WelcomePage() {
                 <button type="button" className="text-orange-600 hover:text-orange-700 font-bold transition-colors">Lupa password?</button>
               </div>
 
-              {/* Tombol Login */}
               <div className="pt-4">
-                {/* Dummy Login: Langsung diarahkan ke /dashboard */}
-                <Link href="/dashboard" className="block w-full no-underline">
-                  <GlowButton className="w-full flex justify-center items-center gap-2" type="button">
-                    Masuk <span className="text-xl">➔</span>
-                  </GlowButton>
-                </Link>
+                <GlowButton className="w-full flex justify-center items-center gap-2" type="submit">
+                  Masuk <span className="text-xl">➔</span>
+                </GlowButton>
               </div>
             </form>
 
-            {/* Link Register */}
             <p className="mt-8 text-center text-sm text-slate-600">
               Belum punya akun? <button type="button" className="text-orange-600 font-bold hover:underline ml-1">Mulai perjalananmu</button>
             </p>
