@@ -21,7 +21,9 @@ export default function LoginPage() {
       const capitalizedName = extractedName.charAt(0).toUpperCase() + extractedName.slice(1);
       
       // Simpan ke memori browser
-      localStorage.setItem("komorebi_username", capitalizedName);
+      if (typeof window !== "undefined") {
+  localStorage.setItem("komorebi_username", fullName);
+}
       
       // Arahkan ke Dashboard
       router.push("/dashboard");
