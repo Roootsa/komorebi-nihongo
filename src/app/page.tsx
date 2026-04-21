@@ -2,29 +2,44 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
+import Link from "next/link"; 
 import GlassCard from "@/components/ui/GlassCard";
 import GlowButton from "@/components/ui/GlowButton";
+
+import { auth } from "@/lib/firebase";
+import { signInWithEmailAndPassword } from "firebase/auth";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (email.trim() !== "" && password.trim() !== "") {
-      // Mengambil nama dari email (contoh: faizar@mail.com -> faizar)
-      const extractedName = email.split('@')[0];
-      // Huruf pertama kapital
-      const capitalizedName = extractedName.charAt(0).toUpperCase() + extractedName.slice(1);
-      
-      // Simpan ke memori browser
-      localStorage.setItem("komorebi_username", capitalizedName);
-      
-      // Arahkan ke Dashboard
-      router.push("/dashboard");
+      setLoading(true);
+      try {
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+
+        if (typeof window !== "undefined") {
+          const rawName = user.displayName || email.split('@')[0];
+          const capitalizedName = rawName.charAt(0).toUpperCase() + rawName.slice(1);
+          localStorage.setItem("komorebi_username", capitalizedName);
+          
+          // ✅ FITUR BARU: Hapus sisa progress dari akun sebelumnya!
+          localStorage.removeItem("komorebi_progress"); 
+        }
+        
+        router.push("/dashboard");
+      } catch (error: any) {
+        alert("Gagal login: Pastikan Email dan Password benar! 🌸");
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
     } else {
       alert("Tolong isi Email/Username dan Password dulu ya! 🌸");
     }
@@ -34,7 +49,6 @@ export default function LoginPage() {
     <main className="min-h-screen flex items-center justify-center p-4 md:p-8">
       <div className="max-w-5xl w-full grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
         
-        {/* Bagian Kiri: Teks Puitis */}
         <div className="text-center md:text-left space-y-6 hidden md:block px-8">
           <div className="inline-block p-3 bg-white/30 rounded-2xl border border-white/50 mb-2 shadow-glass">
             <span className="text-4xl">🌅</span>
@@ -50,7 +64,6 @@ export default function LoginPage() {
           </p>
         </div>
 
-        {/* Bagian Kanan: Form Login */}
         <div className="flex justify-center">
           <GlassCard className="w-full max-w-md p-8 shadow-2xl border-t border-l border-white/60 bg-white/40">
             
@@ -61,10 +74,8 @@ export default function LoginPage() {
             
             <h2 className="text-2xl font-bold text-slate-800 mb-6 text-center">Selamat Datang Kembali</h2>
             
-            {/* Form disambungkan ke handleLogin dan ditambahkan suppressHydrationWarning */}
             <form onSubmit={handleLogin} className="space-y-4" suppressHydrationWarning>
               
-              {/* Input Email/Username */}
               <div>
                 <label className="block text-sm font-medium text-slate-700 mb-1">Username / Email</label>
                 <input 
@@ -78,7 +89,6 @@ export default function LoginPage() {
                 />
               </div>
               
-              {/* Input Password */}
               <div>
                 <label className="block text-sm font-medium text-slate-700 mb-1">Password</label>
                 <input 
@@ -91,24 +101,30 @@ export default function LoginPage() {
                 />
               </div>
 
-              {/* Ingat Saya & Lupa Password */}
               <div className="flex justify-between items-center text-sm px-1 py-2">
                 <label className="flex items-center space-x-2 cursor-pointer">
                   <input type="checkbox" className="rounded text-orange-500 focus:ring-orange-400 bg-white/50 border-white/50 w-4 h-4" />
                   <span className="text-slate-600">Ingat saya</span>
                 </label>
-                <button type="button" className="text-orange-600 hover:text-orange-700 font-bold transition-colors">Lupa password?</button>
+                {/* ✅ FIX: Tambah suppressHydrationWarning di sini */}
+                <button type="button" className="text-orange-600 hover:text-orange-700 font-bold transition-colors" suppressHydrationWarning>
+                  Lupa password?
+                </button>
               </div>
 
               <div className="pt-4">
-                <GlowButton className="w-full flex justify-center items-center gap-2" type="submit">
-                  Masuk <span className="text-xl">➔</span>
+                {/* ✅ FIX: Tambah suppressHydrationWarning di tombol utama */}
+                <GlowButton className="w-full flex justify-center items-center gap-2" type="submit" disabled={loading} suppressHydrationWarning>
+                  {loading ? "Memeriksa Akun..." : "Masuk ➔"}
                 </GlowButton>
               </div>
             </form>
 
             <p className="mt-8 text-center text-sm text-slate-600">
-              Belum punya akun? <button type="button" className="text-orange-600 font-bold hover:underline ml-1">Mulai perjalananmu</button>
+              Belum punya akun? 
+              <Link href="/register" className="text-orange-600 font-bold hover:underline ml-1">
+                Mulai perjalananmu
+              </Link>
             </p>
           </GlassCard>
         </div>

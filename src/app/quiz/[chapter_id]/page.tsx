@@ -5,6 +5,10 @@ import Link from "next/link";
 import GlassCard from "@/components/ui/GlassCard";
 import GlowButton from "@/components/ui/GlowButton";
 
+// ✅ Tambahkan import Firebase
+import { auth, db } from "@/lib/firebase";
+import { doc, updateDoc, arrayUnion } from "firebase/firestore";
+
 import quizDataRaw from "@/data/quiz.json";
 
 interface QuizQuestion {
@@ -30,19 +34,38 @@ export default function QuizPage({ params }: { params: Promise<{ chapter_id: str
   const [score, setScore] = useState(0);
   const [isFinished, setIsFinished] = useState(false);
 
-  // FITUR BARU: Menyimpan progress ke localStorage jika lulus
+  // FITUR: Menyimpan progress ke Firebase & LocalStorage
   useEffect(() => {
-    if (isFinished && score >= 80) {
-      // Ambil data progress sebelumnya (default bab 1 terbuka)
-      const savedProgress = JSON.parse(localStorage.getItem("komorebi_progress") || "[1]");
-      const nextChapter = chapterId + 1;
+    const saveProgress = async () => {
+      const finalScore = Math.round(score);
       
-      // Jika bab selanjutnya belum ada di penyimpanan, tambahkan!
-      if (!savedProgress.includes(nextChapter)) {
-        savedProgress.push(nextChapter);
-        localStorage.setItem("komorebi_progress", JSON.stringify(savedProgress));
+      if (isFinished && finalScore >= 80) {
+        const nextChapter = chapterId + 1;
+
+        // 1. Simpan ke LocalStorage (Cepat)
+        const savedProgress = JSON.parse(localStorage.getItem("komorebi_progress") || "[1]");
+        if (!savedProgress.includes(nextChapter)) {
+          savedProgress.push(nextChapter);
+          localStorage.setItem("komorebi_progress", JSON.stringify(savedProgress));
+        }
+
+        // 2. Simpan ke Firebase (Permanen)
+        const user = auth.currentUser;
+        if (user) {
+          try {
+            const userRef = doc(db, "users", user.uid);
+            await updateDoc(userRef, {
+              unlockedChapters: arrayUnion(nextChapter)
+            });
+            console.log("Progress Firebase berhasil diupdate!");
+          } catch (error) {
+            console.error("Gagal update Firebase:", error);
+          }
+        }
       }
-    }
+    };
+
+    saveProgress();
   }, [isFinished, score, chapterId]);
 
   if (questions.length === 0) {
@@ -84,28 +107,29 @@ export default function QuizPage({ params }: { params: Promise<{ chapter_id: str
   };
 
   if (isFinished) {
+    const finalScore = Math.round(score);
     return (
       <main className="min-h-screen flex items-center justify-center p-4">
         <GlassCard className="max-w-md w-full text-center py-12 px-8 flex flex-col items-center shadow-2xl">
-          <span className="text-6xl mb-4">{score >= 80 ? '🎉' : 'ganbatte!'}</span>
+          <span className="text-6xl mb-4">{finalScore >= 80 ? '🎉' : 'ganbatte!'}</span>
           <h2 className="text-3xl font-bold text-slate-800 mb-2">Kuis Selesai!</h2>
           <p className="text-slate-600 mb-8">Bab {chapterId}</p>
           
           <div className="relative w-40 h-40 rounded-full border-[12px] border-white/50 flex items-center justify-center mb-8 shadow-inner">
-            <span className={`text-5xl font-bold ${score >= 80 ? 'text-emerald-500' : 'text-orange-500'}`}>
-              {Math.round(score)}
+            <span className={`text-5xl font-bold ${finalScore >= 80 ? 'text-emerald-500' : 'text-orange-500'}`}>
+              {finalScore}
             </span>
           </div>
 
           <p className="font-medium text-slate-700 mb-8">
-            {score >= 80 
+            {finalScore >= 80 
               ? "Luar Biasa! Bab selanjutnya telah terbuka di Dashboard." 
               : "Tetap semangat! Coba baca materinya lagi dan ulang kembali."}
           </p>
 
-          <Link href="/dashboard" className="w-full">
+          <a href="/dashboard" className="w-full block">
             <GlowButton className="w-full">Kembali ke Dashboard</GlowButton>
-          </Link>
+          </a>
         </GlassCard>
       </main>
     );
@@ -118,7 +142,7 @@ export default function QuizPage({ params }: { params: Promise<{ chapter_id: str
       <div className="flex items-center justify-between mb-8">
         <div className="flex items-center gap-4">
           <Link href={`/learn/${chapterId}`} className="w-10 h-10 flex items-center justify-center rounded-full bg-white/40 hover:bg-white/60 transition shadow-sm font-bold text-slate-700">
-            X
+            ✕
           </Link>
           <p className="font-bold text-slate-600">Soal {currentIndex + 1} / {questions.length}</p>
         </div>
