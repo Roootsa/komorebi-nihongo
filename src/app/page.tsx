@@ -106,14 +106,12 @@ export default function LoginPage() {
                   <input type="checkbox" className="rounded text-orange-500 focus:ring-orange-400 bg-white/50 border-white/50 w-4 h-4" />
                   <span className="text-slate-600">Ingat saya</span>
                 </label>
-                {/* ✅ FIX: Tambah suppressHydrationWarning di sini */}
                 <button type="button" className="text-orange-600 hover:text-orange-700 font-bold transition-colors" suppressHydrationWarning>
                   Lupa password?
                 </button>
               </div>
 
               <div className="pt-4">
-                {/* ✅ FIX: Tambah suppressHydrationWarning di tombol utama */}
                 <GlowButton className="w-full flex justify-center items-center gap-2" type="submit" disabled={loading} suppressHydrationWarning>
                   {loading ? "Memeriksa Akun..." : "Masuk ➔"}
                 </GlowButton>
@@ -122,9 +120,10 @@ export default function LoginPage() {
 
             <p className="mt-8 text-center text-sm text-slate-600">
               Belum punya akun? 
-              <Link href="/register" className="text-orange-600 font-bold hover:underline ml-1">
+              {/* ✅ FIX: Menggunakan tag <a> agar tombol 100% bisa diklik */}
+              <a href="/register" className="text-orange-600 font-bold hover:underline ml-1">
                 Mulai perjalananmu
-              </Link>
+              </a>
             </p>
           </GlassCard>
         </div>
