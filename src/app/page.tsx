@@ -120,10 +120,14 @@ export default function LoginPage() {
 
             <p className="mt-8 text-center text-sm text-slate-600">
               Belum punya akun? 
-              {/* ✅ FIX: Menggunakan tag <a> agar tombol 100% bisa diklik */}
-              <a href="/register" className="text-orange-600 font-bold hover:underline ml-1">
+              <Link 
+                href="/register" 
+                className="text-orange-600 font-bold hover:underline ml-1"
+                prefetch={false}
+                scroll={false}
+              >
                 Mulai perjalananmu
-              </a>
+              </Link>
             </p>
           </GlassCard>
         </div>
